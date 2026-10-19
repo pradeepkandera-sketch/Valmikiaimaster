@@ -28,7 +28,8 @@ app.post('/api/chat', async (req, res) => {
         }
 
         // Updated working model for Gemini
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-3.8-flash' });
+
 
         let result;
         if (image) {
