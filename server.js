@@ -1,0 +1,75 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Gemini API Setup
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+
+// API Chat Endpoint
+app.post('/api/chat', async (req, res) => {
+    try {
+        const { prompt, image } = req.body;
+
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ error: 'GEMINI_API_KEY सेट नहीं है।' });
+        }
+
+        // Correct model string without 'models/' prefix
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+        let result;
+        if (image) {
+            // Process Image Base64
+            const base64Data = image.split(',')[1] || image;
+            const mimeType = image.split(';')[0].split(':')[1] || 'image/jpeg';
+
+            const imagePart = {
+                inlineData: {
+                    data: base64Data,
+                    mimeType: mimeType
+                }
+            };
+
+            const userPrompt = prompt || "इस फोटो का ध्यानपूर्वक विश्लेषण करें और विस्तार से बताएं।";
+            result = await model.generateContent([userPrompt, imagePart]);
+        } else {
+            result = await model.generateContent(prompt);
+        }
+
+        const responseText = result.response.text();
+        
+        // Return response
+        res.json({
+            text: responseText,
+            generatedImage: null // Gemini API returns text analysis / prompt suggestions for edits
+        });
+
+    } catch (error) {
+        console.error('Gemini API Error:', error);
+        res.status(500).json({ error: error.message || 'AI प्रतिक्रिया जनरेट करने में त्रुटि आई।' });
+    }
+});
+
+// Serve Frontend
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
