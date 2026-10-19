@@ -17,10 +17,8 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Gemini API Setup
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
-// API Chat Endpoint
 app.post('/api/chat', async (req, res) => {
     try {
         const { prompt, image } = req.body;
@@ -29,12 +27,11 @@ app.post('/api/chat', async (req, res) => {
             return res.status(500).json({ error: 'GEMINI_API_KEY सेट नहीं है।' });
         }
 
-        // Correct model string without 'models/' prefix
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        // Updated working model for Gemini
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
         let result;
         if (image) {
-            // Process Image Base64
             const base64Data = image.split(',')[1] || image;
             const mimeType = image.split(';')[0].split(':')[1] || 'image/jpeg';
 
@@ -48,15 +45,14 @@ app.post('/api/chat', async (req, res) => {
             const userPrompt = prompt || "इस फोटो का ध्यानपूर्वक विश्लेषण करें और विस्तार से बताएं।";
             result = await model.generateContent([userPrompt, imagePart]);
         } else {
-            result = await model.generateContent(prompt);
+            result = await model.generateContent(prompt || "नमस्ते");
         }
 
         const responseText = result.response.text();
         
-        // Return response
         res.json({
             text: responseText,
-            generatedImage: null // Gemini API returns text analysis / prompt suggestions for edits
+            generatedImage: null
         });
 
     } catch (error) {
@@ -65,7 +61,6 @@ app.post('/api/chat', async (req, res) => {
     }
 });
 
-// Serve Frontend
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
