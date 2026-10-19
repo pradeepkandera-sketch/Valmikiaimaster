@@ -27,8 +27,8 @@ async function generateWithFallback(prompt, image) {
 
     for (const modelName of modelsToTry) {
         try {
-            const model = genAI.getGenerativeModel({ model: modelName });
-            
+            const model = genAI.getGenerativeModel({ model: 'gemini-3.7-flash' });
+
             if (image) {
                 const base64Data = image.split(',')[1] || image;
                 const mimeType = image.split(';')[0].split(':')[1] || 'image/jpeg';
