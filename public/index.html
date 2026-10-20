@@ -1,80 +1,255 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Valmiki AI Master</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10111c">
+<title>VALMIKI KANDERA MASTER AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0d1020;color:#f6f5ff;font-family:Arial,sans-serif}
+header{text-align:center;padding:20px 10px;background:linear-gradient(130deg,#48218a,#153e85)}
+header h1{font-size:23px;margin:0 0 7px}
+header p{margin:0;font-size:13px;color:#ddd8ff}
+main{max-width:850px;margin:auto;padding:14px}
+nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+button{border:0;border-radius:10px;padding:12px;background:#7352dc;color:white;font-size:14px;font-weight:bold;cursor:pointer}
+nav button{flex:1;min-width:90px}
+button:disabled{opacity:.5}
+.panel{background:#171b30;border:1px solid #303752;border-radius:15px;padding:15px;margin-bottom:13px}
+h2{font-size:19px;margin:0 0 8px}
+p{line-height:1.5}
+textarea,input{width:100%;background:#0e1222;color:white;border:1px solid #39415e;border-radius:10px;padding:12px;margin:8px 0;font:inherit}
+textarea{min-height:85px;resize:vertical}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.secondary{background:#303752}
+#chatlog{height:300px;overflow:auto;display:flex;flex-direction:column;gap:10px;margin:12px 0}
+.bubble{padding:11px 13px;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;max-width:95%}
+.user{align-self:flex-end;background:#423274}
+.bot{align-self:flex-start;background:#262c43}
+.hidden{display:none!important}
+.small{font-size:12px;color:#b9bfd6}
+#status{font-size:12px;color:#e7d9ff}
+img{max-width:100%;max-height:430px;object-fit:contain;border-radius:12px;margin-top:10px}
+a{color:white}
+</style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo-title">
-                <h1>वाल्मीकि AI मास्टर</h1>
-                <span class="subtitle">विज़न और वॉइस मॉडल द्वारा संचालित</span>
-            </div>
-            <div class="user-brand">
-                <span>कंडेरा</span>
-            </div>
-        </header>
+<header>
+  <h1>✦ VALMIKI KANDERA MASTER AI</h1>
+  <p>AI CHAT · VOICE · IMAGE STUDIO</p>
+  <p id="status">सर्वर जाँच रहे हैं…</p>
+</header>
 
-        <!-- Chat Container -->
-        <main class="chat-container" id="chatContainer">
-            <div class="welcome-card" id="welcomeCard">
-                <i class="fa-solid fa-wand-magic-sparkles welcome-icon"></i>
-                <h2>नमस्ते! मैं वाल्मीकि AI मास्टर हूँ।</h2>
-                <p>आप मुझसे कुछ भी पूछ सकते हैं, फोटो एडिट करवा सकते हैं या फोटो अपलोड करके सवाल पूछ सकते हैं।</p>
-            </div>
-        </main>
+<main>
+  <nav>
+    <button onclick="show('chat')">✦ AI चैट</button>
+    <button onclick="show('voice')">🎙️ वॉइस</button>
+    <button onclick="show('image')">🖼️ AI फोटो</button>
+  </nav>
 
-        <!-- Audio Output Controls (Floating Player when AI is speaking) -->
-        <div class="audio-control-bar hidden" id="audioControlBar">
-            <div class="audio-info">
-                <i class="fa-solid fa-volume-high animated-speaker"></i>
-                <span id="audioStatus">AI जवाब बोल रहा है...</span>
-            </div>
-            <div class="audio-buttons">
-                <button id="pauseAudioBtn" title="रोकें / चलाएं"><i class="fa-solid fa-pause"></i></button>
-                <button id="stopAudioBtn" title="बंद करें"><i class="fa-solid fa-square"></i></button>
-            </div>
-        </div>
-
-        <!-- Image Preview Container -->
-        <div class="image-preview-bar hidden" id="imagePreviewBar">
-            <div class="preview-wrapper">
-                <img id="imagePreview" src="" alt="Preview">
-                <button id="removeImageBtn"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <span class="preview-text">फोटो संलग्न की गई है</span>
-        </div>
-
-        <!-- Input Section -->
-        <footer class="input-container">
-            <div class="input-box">
-                <!-- Camera / Attachment Button -->
-                <label for="imageInput" class="icon-btn" title="फोटो अपलोड करें या फोटो खींचें">
-                    <i class="fa-solid fa-camera"></i>
-                </label>
-                <input type="file" id="imageInput" accept="image/*" capture="environment" style="display: none;">
-
-                <!-- Textarea for prompt -->
-                <textarea id="userInput" placeholder="सवाल लिखें या फोटो अपलोड करके निर्देश दें..." rows="1"></textarea>
-
-                <!-- Mic Recording Button -->
-                <button id="micBtn" class="icon-btn mic-btn" title="बोलकर संदेश भेजें">
-                    <i class="fa-solid fa-microphone" id="micIcon"></i>
-                </button>
-
-                <!-- Send Button -->
-                <button id="sendBtn" class="icon-btn send-btn" title="भेजें">
-                    <i class="fa-solid fa-paper-plane"></i>
-                </button>
-            </div>
-        </footer>
+  <section id="chat" class="panel">
+    <h2>AI से सवाल पूछें</h2>
+    <p class="small">हिंदी या English में सवाल लिखें।</p>
+    <div id="chatlog" aria-live="polite"></div>
+    <textarea id="message" placeholder="अपना सवाल यहाँ लिखें…"></textarea>
+    <div class="actions">
+      <button id="send" onclick="sendMessage()">भेजें ➤</button>
+      <button class="secondary" onclick="startMic()">🎙️ माइक</button>
+      <button class="secondary" onclick="stopSpeech()">■ आवाज़ रोकें</button>
     </div>
+  </section>
 
-    <script src="script.js"></script>
+  <section id="voice" class="panel hidden">
+    <h2>AI वॉइस और स्पीकर</h2>
+    <p>माइक दबाकर बोलें। आपकी बात टेक्स्ट बॉक्स में आएगी, फिर भेजें दबाएँ।</p>
+    <button onclick="startMic()">🎙️ बोलना शुरू करें</button>
+    <button class="secondary" onclick="speakLast()">🔊 पिछला जवाब सुनें</button>
+    <button class="secondary" onclick="stopSpeech()">■ रोकें</button>
+    <p id="voiceStatus" class="small"></p>
+  </section>
+
+  <section id="image" class="panel hidden">
+    <h2>AI फोटो एडिटिंग और जनरेशन</h2>
+    <p class="small">नई इमेज बनाने के लिए विवरण लिखें या एडिट करने के लिए फोटो चुनें।</p>
+    <label for="photo">फोटो अपलोड करें (अधिकतम 8 MB)</label>
+    <input type="file" id="photo" accept="image/*">
+    <textarea id="prompt" placeholder="उदाहरण: इस फोटो को cinematic portrait बनाएँ और चेहरे की पहचान यथासंभव बनाए रखें।"></textarea>
+    <button id="makeImage" onclick="makeImage()">✦ इमेज बनाएँ / एडिट करें</button>
+    <p id="imageStatus" class="small" aria-live="polite"></p>
+    <img id="preview" class="hidden" alt="AI द्वारा तैयार इमेज">
+    <p><a id="download" class="hidden" download="valmiki-kandera-image.png">⬇ तैयार इमेज डाउनलोड करें</a></p>
+  </section>
+
+  <p class="small">नोट: AI सुविधाओं के लिए Render पर सही API key और उपलब्ध मॉडल आवश्यक हैं। माइक की सुविधा ब्राउज़र सपोर्ट और अनुमति पर निर्भर है।</p>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let lastAnswer = "";
+
+function show(page) {
+  ["chat","voice","image"].forEach(id =>
+    $(id).classList.toggle("hidden", id !== page)
+  );
+}
+
+async function checkServer() {
+  try {
+    const r = await fetch("/api/health");
+    const d = await r.json();
+    $("status").textContent = d.apiConfigured
+      ? "● सर्वर जुड़ा है"
+      : "● GEMINI_API_KEY सेट नहीं है";
+  } catch {
+    $("status").textContent = "● सर्वर से संपर्क नहीं हो रहा";
+  }
+}
+checkServer();
+
+function bubble(text, type) {
+  const el = document.createElement("div");
+  el.className = "bubble " + type;
+  el.textContent = text;
+  $("chatlog").appendChild(el);
+  $("chatlog").scrollTop = $("chatlog").scrollHeight;
+}
+
+async function sendMessage() {
+  const message = $("message").value.trim();
+  if (!message) {
+    $("voiceStatus").textContent = "पहले अपना सवाल लिखें या माइक से बोलें।";
+    return;
+  }
+
+  $("message").value = "";
+  bubble(message, "user");
+  const btn = $("send");
+  btn.disabled = true;
+  btn.textContent = "जवाब आ रहा है…";
+  const waiting = document.createElement("div");
+  waiting.className = "bubble bot";
+  waiting.textContent = "AI सोच रहा है…";
+  $("chatlog").appendChild(waiting);
+
+  try {
+    const r = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({message})
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "AI अनुरोध विफल हुआ।");
+    waiting.remove();
+    lastAnswer = data.reply;
+    bubble(lastAnswer, "bot");
+    const speakButton = document.createElement("button");
+    speakButton.className = "secondary";
+    speakButton.textContent = "🔊 जवाब सुनें";
+    speakButton.onclick = () => speak(lastAnswer);
+    $("chatlog").appendChild(speakButton);
+  } catch (e) {
+    waiting.textContent = "समस्या: " + e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "भेजें ➤";
+  }
+}
+
+function speak(text) {
+  if (!("speechSynthesis" in window)) {
+    alert("इस ब्राउज़र में स्पीकर सुविधा उपलब्ध नहीं है।");
+    return;
+  }
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = /[\u0900-\u097F]/.test(text) ? "hi-IN" : "en-US";
+  speechSynthesis.speak(utterance);
+}
+
+function speakLast() {
+  if (lastAnswer) speak(lastAnswer);
+  else $("voiceStatus").textContent = "पहले AI चैट में सवाल पूछें।";
+}
+
+function stopSpeech() {
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+}
+
+function startMic() {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    $("voiceStatus").textContent =
+      "माइक से टेक्स्ट बनाने की सुविधा इस ब्राउज़र में उपलब्ध नहीं है। Chrome में HTTPS वेबसाइट खोलकर कोशिश करें।";
+    show("voice");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = "hi-IN";
+  recognition.interimResults = false;
+  $("voiceStatus").textContent = "सुन रहा हूँ…";
+  recognition.onresult = event => {
+    $("message").value = event.results[0][0].transcript;
+    $("voiceStatus").textContent = "आपकी आवाज़ टेक्स्ट में बदल गई। अब भेजें दबाएँ।";
+    show("chat");
+  };
+  recognition.onerror = event => {
+    $("voiceStatus").textContent =
+      "माइक समस्या: " + event.error + "। माइक अनुमति जाँचें।";
+  };
+  recognition.start();
+}
+
+$("photo").addEventListener("change", () => {
+  const file = $("photo").files[0];
+  if (file && file.size > 8 * 1024 * 1024) {
+    alert("कृपया 8 MB से छोटी फोटो चुनें।");
+    $("photo").value = "";
+  }
+});
+
+async function makeImage() {
+  const prompt = $("prompt").value.trim();
+  const file = $("photo").files[0];
+
+  if (!prompt) {
+    $("imageStatus").textContent = "पहले इमेज का विवरण लिखें।";
+    return;
+  }
+
+  const btn = $("makeImage");
+  btn.disabled = true;
+  $("imageStatus").textContent = "इमेज तैयार हो रही है…";
+  $("preview").classList.add("hidden");
+  $("download").classList.add("hidden");
+
+  try {
+    const form = new FormData();
+    form.append("prompt", prompt);
+    if (file) form.append("image", file);
+
+    const r = await fetch("/api/image", {
+      method: "POST",
+      body: form
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "इमेज नहीं बन पाई।");
+
+    $("preview").src = data.image;
+    $("preview").classList.remove("hidden");
+    $("download").href = data.image;
+    $("download").classList.remove("hidden");
+    $("imageStatus").textContent = data.note || "इमेज तैयार है।";
+  } catch (e) {
+    $("imageStatus").textContent = "समस्या: " + e.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
 </body>
 </html>
